@@ -136,21 +136,27 @@ pipeline {
         success {
             script {
                 stage('Build Success') {
-                    mail bcc: '', body: "<b>Example</b><br>\n<br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> URL de build: ${env.BUILD_URL}", cc: '', charset: 'UTF-8', from: '', mimeType: 'text/html', replyTo: '', subject: "ERROR CI: Project name -> ${env.JOB_NAME}", to: "nimit.johri@nagarro.com";
-                    // mail bcc: '',
-                    // body: """
-                    //     <b> Nagp Exam Devops <b><br>
-                    //     Project: ${env.JOB_NAME}
-                    //     Build Number: ${env.BUILD_NUMBER} <br>
-                    //     Build Url: ${env.BUILD_URL}
-                    // """,
-                    // subject: "Success: ${env.JOB_NAME}",
-                    // cc: '',
+                    // mail bcc: '', 
+                    // body: "<b>Example</b><br>\n<br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> URL de build: ${env.BUILD_URL}", 
+                    // cc: '', 
                     // charset: 'UTF-8', 
-                    // from: 'jenkinsServer', 
-                    // mimeType: 'text/html', 
-                    // replyTo: '', 
-                    // to: "nimitjohri5@gmail.com"
+                    // from: '', mimeType: 'text/html', replyTo: '', 
+                    // subject: "ERROR CI: Project name -> ${env.JOB_NAME}", 
+                    // to: "nimit.johri@nagarro.com";
+                    mail bcc: '',
+                    body: """
+                        <b> Nagp Exam Devops <b><br>
+                        Project: ${env.JOB_NAME}
+                        Build Number: ${env.BUILD_NUMBER} <br>
+                        Build Url: ${env.BUILD_URL}
+                    """,
+                    subject: "Success: ${env.JOB_NAME}",
+                    cc: '',
+                    charset: 'UTF-8', 
+                    from: 'jenkinsServer', 
+                    mimeType: 'text/html', 
+                    replyTo: '', 
+                    to: "nimitjohri5@gmail.com", "nimit.johri@nagarro.com";
                 }
             }
         }
