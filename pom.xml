@@ -2,8 +2,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.nagarro.devops-tools.devops</groupId>
-	<artifactId>demosampleapplication</artifactId>
+	<groupId>com.example</groupId>
+	<artifactId>nagp-devops-exam-try-1</artifactId>
 	<packaging>war</packaging>
 	<version>1.0.0-SNAPSHOT</version>
 	<name>Devops Sample Application</name>
@@ -188,6 +188,6 @@
 				<directory>src/main/webapp</directory>
 			</testResource>
 		</testResources>
-		<finalName>devopssampleapplication</finalName>
+		<finalName>devopssampleapplicationq</finalName>
 	</build>
 </project>
