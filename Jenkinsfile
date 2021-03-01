@@ -47,7 +47,7 @@ pipeline {
             steps {
                 rtMavenDeployer{
                     id: 'dev-deployer',
-                    serverId: 'artifactory6.20',
+                    serverId: 'artifactory 6.20',
                     snapshotRepo: 'nagp-devops-exam-try-1',
                     releaseRepo: 'nagp-devops-exam-try-1'
                 }
