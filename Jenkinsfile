@@ -86,10 +86,10 @@ pipeline {
                     for /f %%i in ('docker ps -aqf "name=^nagp-devops-exam"') do set ContainerID=%%i
                     echo %ContainerID%
                     If %ContainerID% == "" (
-                        echo 'No running container'
+                        echo "No running container"
                     ) else (
-                        'docker stop %ContainerID%'
-                        'docker rm -f %ContainerID%'
+                        docker stop %ContainerID%
+                        docker rm -f %ContainerID%
                     )
                     '''
                 }
