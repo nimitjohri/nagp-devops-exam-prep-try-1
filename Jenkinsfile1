@@ -1,0 +1,115 @@
+pipeline {
+    agent any
+    tools
+    {
+        maven 'Maven3'
+    }
+    options {
+        timestamps()
+        timeout(time: 1, unit: 'HOURS')
+        skipDefaultCheckout()
+        buildDiscarder(logRotator(daysToKeepStr: '10', numToKeepStr: '10'))
+        disableConcurrentBuilds()
+    }
+
+    stages {
+
+        stage ('Checkout') {
+            steps {
+                script {
+                    checkout scm
+                }
+            }
+        }
+
+        stage ('Build') {
+            steps {
+                script {
+                    bat 'mvn clean install'
+                }
+            }
+        }
+
+        stage ('Unit Testing') {
+            steps {
+                script {
+                    bat 'mvn test'
+                }
+            }
+        }
+
+        stage ("Sonar Analysis") {
+            steps {
+                withSonarQubeEnv("Test_Sonar") {
+                    bat 'mvn sonar:sonar'
+                }
+            }
+        }
+        stage ('Upload to Artifactory') {
+            steps {
+                rtMavenDeployer(
+                    id: 'deployer',
+                    serverId: '123456789@artifactory',
+                    releaseRepo: 'CI-Automation-JAVA',
+                    snapshotRepo: 'CI-Automation-JAVA'
+                )
+
+                rtMavenRun(
+                    pom: 'pom.xml',
+                    goals: 'clean install',
+                    deployerId: 'deployer'
+                )
+
+                rtPublishBuildInfo(
+                    serverId: '123456789@artifactory'
+                )
+            }
+        }
+
+        stage ('Docker Image') {
+            steps {
+                bat 'docker build -t dtr.nagarro.com:443/i-nimitjohri-master --no-cache -f Dockerfile .'
+            }
+        }
+
+        stage ('Push To DTR') {
+            steps {
+                bat 'docker push dtr.nagarro.com:443/i-nimitjohri-master'
+            }
+        }
+
+        stage ('Stopping running container') {
+            steps {
+                bat '''
+                for /f %%i in ('docker ps -aqf "name=^c_nimitjohri_master"') do set containerId=%%i
+                echo %containerId%
+                If "%containerId%" == "" (
+                echo "No Container running"
+                ) ELSE (
+                docker stop %ContainerId%
+                docker rm -f %ContainerId%
+                )'''
+            }
+        }
+
+        stage ('Docker deployment') {
+            steps {
+                bat 'docker run --name c_nimitjohri_master -d -p 6200:8080 dtr.nagarro.com:443/i-nimitjohri-master'
+            }
+        }
+
+        stage('Helm Chart Deployment') {
+            steps {
+                bat 'kubectl delete namespace nimitjohri-kube || exit 0'
+                bat 'kubectl create namespace nimitjohri-kube'
+                bat 'helm install nagp-devops nagp-devops-chart -n nimitjohri-kube'
+            }
+        }
+    }
+
+    post {
+        always {
+            junit 'target/surefire-reports/*.xml'
+        }
+    }
+}

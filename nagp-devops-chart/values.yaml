@@ -1,0 +1,2 @@
+replicaCount: 1
+nodeport: 30157
