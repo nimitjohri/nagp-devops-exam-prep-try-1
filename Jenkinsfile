@@ -80,11 +80,13 @@ pipeline {
 
         stage ('Push To DTR') {
             steps {
-                bat 'docker login -u nimit07 -p Human@123'
-                if (scmVars.GIT_Branch == "origin/dev") {
-                    bat 'docker push nimit07/nagp-devops-exam:%BUILD_NUMBER%'
-                } else if  (scmVars.GIT_Branch == "origin/prod") {
-                    bat 'docker push nimit07/nagp-devops-exam-prod:%BUILD_NUMBER%'
+                script{
+                    bat 'docker login -u nimit07 -p Human@123'
+                    if (scmVars.GIT_Branch == "origin/dev") {
+                        bat 'docker push nimit07/nagp-devops-exam:%BUILD_NUMBER%'
+                    } else if  (scmVars.GIT_Branch == "origin/prod") {
+                        bat 'docker push nimit07/nagp-devops-exam-prod:%BUILD_NUMBER%'
+                    }
                 }
             }
         }
