@@ -59,7 +59,7 @@ pipeline {
                 }
 
                 rtPublishBuildInfo{
-                    serverId: 'artifactory6.20'
+                    serverId: 'artifactory 6.20'
                 }
             }
         }
