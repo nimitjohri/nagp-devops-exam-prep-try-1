@@ -122,7 +122,7 @@ pipeline {
                     } else if  (scmVars.GIT_Branch == "origin/prod") {
                         tagname = 'nagp-devops-exam-prod'
                     }
-                    bat 'docker run --name ${tagname} -d -p 6300:8080 nimit07/${tagname}:%BUILD_NUMBER%'
+                    bat 'docker run --name "${tagname}" -d -p 6300:8080 nimit07/"${tagname}":%BUILD_NUMBER%'
                 }
             }
         }
