@@ -2,7 +2,6 @@ pipeline {
     agent any
     tools {
         maven 'M3'
-        sonar 'SonarQube8.4'
     }
     options {
         timestamps()
@@ -38,7 +37,7 @@ pipeline {
 
         stage ('Sonar Analysis') {
             steps {
-                script {
+                withSonarQubeEnv('SonarQube8.4') {
                     bat 'mvn sonar:sonar'
                 }
             }
