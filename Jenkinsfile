@@ -37,7 +37,7 @@ pipeline {
 
         stage ('Sonar Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube8.4') {
+                withSonarQubeEnv('SonarQube 8.4') {
                     bat 'mvn sonar:sonar'
                 }
             }
