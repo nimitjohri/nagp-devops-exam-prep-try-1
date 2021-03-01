@@ -83,13 +83,13 @@ pipeline {
             steps {
                 script {
                     bat '''
-                    for /f %%i in ('docker ps -aqf "name=^nagp-devops-exam"') do set ContainerID=%%i
-                    echo %ContainerID%
-                    If %ContainerID% == "" (
+                    for /f %%i in ('docker ps -aqf "name=^nagp-devops-exam"') do set containerID=%%i
+                    echo %containerId%
+                    If %containerID% == "" (
                         echo "No running container"
                     ) else (
-                        docker stop %ContainerID%
-                        docker rm -f %ContainerID%
+                        docker stop %containerID%
+                        docker rm -f %containerID%
                     )
                     '''
                 }
