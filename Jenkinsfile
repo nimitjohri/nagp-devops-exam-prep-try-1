@@ -99,7 +99,7 @@ pipeline {
         stage ('Docker Deployment') {
             steps {
                 script {
-                    bat 'docker run --name nagp-devops-exam -d 6300:8080 nimit07/nagp-devops-exam:%BUILD_NUMBER%'
+                    bat 'docker run --name nagp-devops-exam -d -p 6300:8080 nimit07/nagp-devops-exam:%BUILD_NUMBER%'
                 }
             }
         }
