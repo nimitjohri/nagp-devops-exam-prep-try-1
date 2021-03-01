@@ -79,5 +79,30 @@ pipeline {
             }
         }
 
+        stage ('Stop Running Contaiers') {
+            steps {
+                script {
+                    bat '''
+                    for /f %%i in ('docker ps -aqf "name=^nagp-devops-exam"') do set ContainerID=%%i
+                    echo %ContainerID%
+                    If %ContainerID% == "" (
+                        echo 'No running container'
+                    ) else (
+                        'docker stop %ContainerID%'
+                        'docker rm -f %ContainerID%'
+                    )
+                    '''
+                }
+            }
+        }
+
+        stage ('Docker Deployment') {
+            steps {
+                script {
+                    bat 'docker run --name nagp-devops-exam -d 6300:8080 nimit07/nagp-devops-exam:%BUILD_NUMBER%'
+                }
+            }
+        }
+
     }
 }
