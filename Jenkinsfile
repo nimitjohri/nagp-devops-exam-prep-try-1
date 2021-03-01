@@ -118,11 +118,10 @@ pipeline {
             steps {
                 script {
                     if (scmVars.GIT_Branch == "origin/dev") {
-                        tagname = 'nagp-devops-exam'
+                        bat 'docker run --name nagp-devops-exam -d -p 6300:8080 nimit07/nagp-devops-exam:%BUILD_NUMBER%'
                     } else if  (scmVars.GIT_Branch == "origin/prod") {
-                        tagname = 'nagp-devops-exam-prod'
+                        bat 'docker run --name nagp-devops-exam-prod -d -p 6300:8080 nimit07/nagp-devops-exam-prod:%BUILD_NUMBER%'
                     }
-                    bat 'docker run --name "${tagname}" -d -p 6300:8080 nimit07/"${tagname}":%BUILD_NUMBER%'
                 }
             }
         }
