@@ -67,7 +67,7 @@ pipeline {
         stage ('Docker build') {
             steps {
                 script {
-                    bat 'docker build  --network=host  -t nimit07/nagp-devops-exam:%BUILD_NUMBER% --no-cache -f Dockerfile .'
+                    bat 'docker build  --network=host  -t nimit07/nagp-devops-exam-prod:%BUILD_NUMBER% --no-cache -f Dockerfile .'
                 }
             }
         }
@@ -75,7 +75,7 @@ pipeline {
         stage ('Push To DTR') {
             steps {
                 bat 'docker login -u nimit07 -p Human@123'
-                bat 'docker push nimit07/nagp-devops-exam:%BUILD_NUMBER%'
+                bat 'docker push nimit07/nagp-devops-exam-prod:%BUILD_NUMBER%'
             }
         }
 
@@ -83,7 +83,7 @@ pipeline {
             steps {
                 script {
                     bat '''
-                    for /f %%i in ('docker ps -aqf "name=^nagp-devops-exam"') do set containerId=%%i
+                    for /f %%i in ('docker ps -aqf "name=^nagp-devops-exam-prod"') do set containerId=%%i
                     echo %containerId%
                     If "%containerId%" == "" (
                         echo "No running container"
@@ -99,7 +99,7 @@ pipeline {
         stage ('Docker Deployment') {
             steps {
                 script {
-                    bat 'docker run --name nagp-devops-exam -d -p 6300:8080 nimit07/nagp-devops-exam:%BUILD_NUMBER%'
+                    bat 'docker run --name nagp-devops-exam -d -p 6400:8080 nimit07/nagp-devops-exam-prod:%BUILD_NUMBER%'
                 }
             }
         }
