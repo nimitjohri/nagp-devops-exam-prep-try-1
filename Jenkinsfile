@@ -63,5 +63,13 @@ pipeline {
                 )
             }
         }
+
+        stage ('Docker build') {
+            steps {
+                script {
+                    bat 'docker build -t dtr.exam.com:443/nagp-devops-exam --no-cache -f Dockerfile .'
+                }
+            }
+        }
     }
 }
