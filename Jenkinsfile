@@ -42,5 +42,26 @@ pipeline {
                 }
             }
         }
+
+        stage ('Upload to Artifactory') {
+            steps {
+                rtMavenDeployer {
+                    id: 'deployer',
+                    serverId: 'artifactory6.20'
+                    snapshotRepo: 'nagp-devops-exam-try-1'
+                    releaseRepo: 'nagp-devops-exam-try-1'
+                }
+
+                rtMavenRun {
+                    pom: 'pom.xml'
+                    goals: 'clean install'
+                    deployerId: 'deployer'
+                }
+
+                rtPublishBuildInfo {
+                    serverId: 'artifactory6.20'
+                }
+            }
+        }
     }
 }
