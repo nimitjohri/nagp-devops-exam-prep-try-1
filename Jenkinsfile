@@ -134,15 +134,25 @@ pipeline {
         }
 
         success {
-            mail bcc: '',
-            body: """
-                <b> Nagp Exam Devops <b><br>
-                Project: ${env.JOB_NAME}
-                Build Number: ${env.BUILD_NUMBER} <br>
-                Build Url: ${env.BUILD_URL}
-            """,
-            subject: "Success: ${env.JOB_NAME}",
-            to: "nimitjohri5@gmail.com"
+            script {
+                stage('Build Success') {
+                    mail bcc: '',
+                    body: """
+                        <b> Nagp Exam Devops <b><br>
+                        Project: ${env.JOB_NAME}
+                        Build Number: ${env.BUILD_NUMBER} <br>
+                        Build Url: ${env.BUILD_URL}
+                    """,
+                    subject: "Success: ${env.JOB_NAME}",
+                    cc: '',
+                    charset: 'UTF-8', 
+                    from: 'jenkinsServer', 
+                    mimeType: 'text/html', 
+                    replyTo: '', 
+                    to: "nimitjohri5@gmail.com"
+
+                }
+            }
         }
     }
 
