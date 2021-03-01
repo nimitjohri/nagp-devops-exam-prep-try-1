@@ -127,4 +127,23 @@ pipeline {
         }
 
     }
+
+    post {
+        always {
+            junit 'target/surefire-reports/*.xml'
+        }
+
+        success {
+            mail bcc: '',
+            body: """
+                <b> Nagp Exam Devops <b><br>
+                Project: ${env.JOB_NAME}
+                Build Number: ${env.BUILD_NUMBER} <br>
+                Build Url: ${env.BUILD_URL}
+            """,
+            subject: "Success: ${env.JOB_NAME}",
+            to: "nimitjohri5@gmail.com"
+        }
+    }
+
 }
