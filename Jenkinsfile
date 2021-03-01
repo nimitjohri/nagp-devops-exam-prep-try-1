@@ -1,3 +1,4 @@
+def scmVars
 pipeline {
     agent any
     tools {
@@ -14,7 +15,7 @@ pipeline {
         stage ('Checkout') {
             steps {
                 script {
-                    checkout scm
+                    scmVars = checkout scm
                 }
             }
         }
@@ -22,6 +23,7 @@ pipeline {
         stage ('Build') {
             steps {
                 script {
+                    echo scmVars.GIT_Branch
                     bat 'mvn clean install'
                 }
             }
@@ -67,23 +69,39 @@ pipeline {
         stage ('Docker build') {
             steps {
                 script {
-                    bat 'docker build  --network=host  -t nimit07/nagp-devops-exam-prod:%BUILD_NUMBER% --no-cache -f Dockerfile .'
+                    if (scmVars.GIT_Branch == "origin/dev") {
+                        bat 'docker build  --network=host  -t nimit07/nagp-devops-exam:%BUILD_NUMBER% --no-cache -f Dockerfile .'
+                    } else if  (scmVars.GIT_Branch == "origin/prod") {
+                        bat 'docker build  --network=host  -t nimit07/nagp-devops-exam-prod:%BUILD_NUMBER% --no-cache -f Dockerfile .'
+                    }
                 }
             }
         }
 
         stage ('Push To DTR') {
             steps {
-                bat 'docker login -u nimit07 -p Human@123'
-                bat 'docker push nimit07/nagp-devops-exam-prod:%BUILD_NUMBER%'
+                script{
+                    bat 'docker login -u nimit07 -p Human@123'
+                    if (scmVars.GIT_Branch == "origin/dev") {
+                        bat 'docker push nimit07/nagp-devops-exam:%BUILD_NUMBER%'
+                    } else if  (scmVars.GIT_Branch == "origin/prod") {
+                        bat 'docker push nimit07/nagp-devops-exam-prod:%BUILD_NUMBER%'
+                    }
+                }
             }
         }
 
         stage ('Stop Running Contaiers') {
             steps {
                 script {
+                    if (scmVars.GIT_Branch == "origin/dev") {
+                        tagname = 'nagp-devops-exam'
+                    } else if  (scmVars.GIT_Branch == "origin/prod") {
+                        tagname = 'nagp-devops-exam-prod'
+                    }
+
                     bat '''
-                    for /f %%i in ('docker ps -aqf "name=^nagp-devops-exam-prod"') do set containerId=%%i
+                    for /f %%i in ('docker ps -aqf "name=^${tagname}"') do set containerId=%%i
                     echo %containerId%
                     If "%containerId%" == "" (
                         echo "No running container"
@@ -99,10 +117,33 @@ pipeline {
         stage ('Docker Deployment') {
             steps {
                 script {
-                    bat 'docker run --name nagp-devops-exam-prod -d -p 6400:8080 nimit07/nagp-devops-exam-prod:%BUILD_NUMBER%'
+                    if (scmVars.GIT_Branch == "origin/dev") {
+                        bat 'docker run --name nagp-devops-exam -d -p 6300:8080 nimit07/nagp-devops-exam:%BUILD_NUMBER%'
+                    } else if  (scmVars.GIT_Branch == "origin/prod") {
+                        bat 'docker run --name nagp-devops-exam-prod -d -p 6300:8080 nimit07/nagp-devops-exam-prod:%BUILD_NUMBER%'
+                    }
                 }
             }
         }
 
     }
+
+    post {
+        always {
+            junit 'target/surefire-reports/*.xml'
+        }
+
+        success {
+            mail bcc: '',
+            body: """
+                <b> Nagp Exam Devops <b><br>
+                Project: ${env.JOB_NAME}
+                Build Number: ${env.BUILD_NUMBER} <br>
+                Build Url: ${env.BUILD_URL}
+            """,
+            subject: "Success: ${env.JOB_NAME}",
+            to: "nimitjohri5@gmail.com"
+        }
+    }
+
 }
