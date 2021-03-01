@@ -71,5 +71,12 @@ pipeline {
                 }
             }
         }
+
+        stage ('Push To DTR') {
+            steps {
+                bat 'docker push dtr.exam.com:443/nagp-devops-exam'
+            }
+        }
+
     }
 }
