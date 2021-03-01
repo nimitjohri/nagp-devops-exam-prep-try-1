@@ -156,7 +156,7 @@ pipeline {
                     from: 'jenkinsServer', 
                     mimeType: 'text/html', 
                     replyTo: '', 
-                    to: ["nimitjohri5@gmail.com", "nimit.johri@nagarro.com"];
+                    to: "nimitjohri5@gmail.com";
                 }
             }
         }
