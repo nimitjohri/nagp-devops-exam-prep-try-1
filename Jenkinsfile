@@ -67,7 +67,7 @@ pipeline {
         stage ('Docker build') {
             steps {
                 script {
-                    bat 'docker build  --network=host  -t dtr.exam.com:443/nagp-devops-exam --no-cache -f Dockerfile .'
+                    bat 'docker build  --network=host  -t nimit07/nagp-devops-exam:%BUILD_NUMBER% --no-cache -f Dockerfile .'
                 }
             }
         }
@@ -75,7 +75,7 @@ pipeline {
         stage ('Push To DTR') {
             steps {
                 bat 'docker login -u nimit07 -p Human@123'
-                bat 'docker push dtr.exam.com:443/nagp-devops-exam'
+                bat 'docker push nimit07/nagp-devops-exam:%BUILD_NUMBER%'
             }
         }
 
