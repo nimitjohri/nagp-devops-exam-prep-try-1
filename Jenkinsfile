@@ -45,20 +45,20 @@ pipeline {
 
         stage ('Upload to Artifactory') {
             steps {
-                rtMavenDeployer {
+                rtMavenDeployer{
                     id: 'deployer',
-                    serverId: 'artifactory6.20'
-                    snapshotRepo: 'nagp-devops-exam-try-1'
+                    serverId: 'artifactory6.20',
+                    snapshotRepo: 'nagp-devops-exam-try-1',
                     releaseRepo: 'nagp-devops-exam-try-1'
                 }
 
-                rtMavenRun {
+                rtMavenRun{
                     pom: 'pom.xml'
                     goals: 'clean install'
                     deployerId: 'deployer'
                 }
 
-                rtPublishBuildInfo {
+                rtPublishBuildInfo{
                     serverId: 'artifactory6.20'
                 }
             }
