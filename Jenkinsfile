@@ -84,7 +84,7 @@ pipeline {
                 script {
                     bat '''
                     for /f %%i in ('docker ps -aqf "name=^nagp-devops-exam"') do set containerID=%%i
-                    echo %containerId%
+                    echo %containerID%
                     If %containerID% == "" (
                         echo "No running container"
                     ) else (
