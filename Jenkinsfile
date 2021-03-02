@@ -98,22 +98,30 @@ pipeline {
             steps {
                 script {
                     if (scmVars.GIT_BRANCH == "origin/dev") {
-                        tagname = 'nagp-devops-exam'
+                        bat '''
+                        echo %tagname%
+                        for /f %%i in ('docker ps -aqf "name=^nagp-devops-exam"') do set containerId=%%i
+                        echo %containerId%
+                        If "%containerId%" == "" (
+                            echo "No running container"
+                        ) else (
+                            docker stop %containerId%
+                            docker rm -f %containerId%
+                        )
+                        '''
                     } else if  (scmVars.GIT_BRANCH == "origin/prod") {
-                        tagname = 'nagp-devops-exam-prod'
+                        bat '''
+                        echo %tagname%
+                        for /f %%i in ('docker ps -aqf "name=^nagp-devops-exam-prod"') do set containerId=%%i
+                        echo %containerId%
+                        If "%containerId%" == "" (
+                            echo "No running container"
+                        ) else (
+                            docker stop %containerId%
+                            docker rm -f %containerId%
+                        )
+                        '''
                     }
-
-                    bat '''
-                    echo %tagname%
-                    for /f %%i in ('docker ps -aqf "name=^${tagname}"') do set containerId=%%i
-                    echo %containerId%
-                    If "%containerId%" == "" (
-                        echo "No running container"
-                    ) else (
-                        docker stop %containerId%
-                        docker rm -f %containerId%
-                    )
-                    '''
                 }
             }
         }
