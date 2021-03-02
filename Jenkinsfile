@@ -16,6 +16,7 @@ pipeline {
             steps {
                 script {
                     scmVars = checkout scm
+                    echo scmVars.GIT_BRANCH
                 }
             }
         }
@@ -70,8 +71,10 @@ pipeline {
             steps {
                 script {
                     if (scmVars.GIT_Branch == "origin/dev") {
+                        echo "im in dev"
                         bat 'docker build  --network=host  -t nimit07/nagp-devops-exam:%BUILD_NUMBER% --no-cache -f Dockerfile .'
                     } else if  (scmVars.GIT_Branch == "origin/prod") {
+                        echo "im in prod"
                         bat 'docker build  --network=host  -t nimit07/nagp-devops-exam-prod:%BUILD_NUMBER% --no-cache -f Dockerfile .'
                     }
                 }
