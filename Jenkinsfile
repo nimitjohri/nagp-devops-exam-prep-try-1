@@ -132,7 +132,7 @@ pipeline {
                     if (scmVars.GIT_BRANCH == "origin/dev") {
                         bat 'docker run --name nagp-devops-exam -d -p 6300:8080 nimit07/nagp-devops-exam:%BUILD_NUMBER%'
                     } else if  (scmVars.GIT_BRANCH == "origin/prod") {
-                        bat 'docker run --name nagp-devops-exam-prod -d -p 6300:8080 nimit07/nagp-devops-exam-prod:%BUILD_NUMBER%'
+                        bat 'docker run --name nagp-devops-exam-prod -d -p 6400:8080 nimit07/nagp-devops-exam-prod:%BUILD_NUMBER%'
                     }
                 }
             }
