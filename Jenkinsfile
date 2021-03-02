@@ -24,7 +24,7 @@ pipeline {
         stage ('Build') {
             steps {
                 script {
-                    echo scmVars.GIT_Branch
+                    echo scmVars.GIT_BRANCH
                     bat 'mvn clean install'
                 }
             }
@@ -70,10 +70,10 @@ pipeline {
         stage ('Docker build') {
             steps {
                 script {
-                    if (scmVars.GIT_Branch == "origin/dev") {
+                    if (scmVars.GIT_BRANCH == "origin/dev") {
                         echo "im in dev"
                         bat 'docker build  --network=host  -t nimit07/nagp-devops-exam:%BUILD_NUMBER% --no-cache -f Dockerfile .'
-                    } else if  (scmVars.GIT_Branch == "origin/prod") {
+                    } else if  (scmVars.GIT_BRANCH == "origin/prod") {
                         echo "im in prod"
                         bat 'docker build  --network=host  -t nimit07/nagp-devops-exam-prod:%BUILD_NUMBER% --no-cache -f Dockerfile .'
                     }
@@ -85,9 +85,9 @@ pipeline {
             steps {
                 script{
                     bat 'docker login -u nimit07 -p Human@123'
-                    if (scmVars.GIT_Branch == "origin/dev") {
+                    if (scmVars.GIT_BRANCH == "origin/dev") {
                         bat 'docker push nimit07/nagp-devops-exam:%BUILD_NUMBER%'
-                    } else if  (scmVars.GIT_Branch == "origin/prod") {
+                    } else if  (scmVars.GIT_BRANCH == "origin/prod") {
                         bat 'docker push nimit07/nagp-devops-exam-prod:%BUILD_NUMBER%'
                     }
                 }
@@ -97,9 +97,9 @@ pipeline {
         stage ('Stop Running Contaiers') {
             steps {
                 script {
-                    if (scmVars.GIT_Branch == "origin/dev") {
+                    if (scmVars.GIT_BRANCH == "origin/dev") {
                         tagname = 'nagp-devops-exam'
-                    } else if  (scmVars.GIT_Branch == "origin/prod") {
+                    } else if  (scmVars.GIT_BRANCH == "origin/prod") {
                         tagname = 'nagp-devops-exam-prod'
                     }
 
@@ -121,9 +121,9 @@ pipeline {
         stage ('Docker Deployment') {
             steps {
                 script {
-                    if (scmVars.GIT_Branch == "origin/dev") {
+                    if (scmVars.GIT_BRANCH == "origin/dev") {
                         bat 'docker run --name nagp-devops-exam -d -p 6300:8080 nimit07/nagp-devops-exam:%BUILD_NUMBER%'
-                    } else if  (scmVars.GIT_Branch == "origin/prod") {
+                    } else if  (scmVars.GIT_BRANCH == "origin/prod") {
                         bat 'docker run --name nagp-devops-exam-prod -d -p 6300:8080 nimit07/nagp-devops-exam-prod:%BUILD_NUMBER%'
                     }
                 }
